@@ -5,7 +5,7 @@ const { join } = require('path')
 const { app } = require('electron')
 const { showDialog } = require('../dialogs')
 const logger = require('../common/logger')
-const { applyDefaults, checkCorsConfig, checkPorts, configExists, rmApiFile, apiFileExists } = require('./config')
+const { applyDefaults, migrateConfig, checkCorsConfig, checkPorts, configExists, rmApiFile, apiFileExists } = require('./config')
 const { getCustomBinary } = require('../custom-ipfs-binary')
 
 function cannotConnectDialog (addr) {
@@ -22,7 +22,7 @@ function cannotConnectDialog (addr) {
 function getIpfsBinPath () {
   return process.env.IPFS_GO_EXEC ||
     getCustomBinary() ||
-    require('go-ipfs-dep')
+    require('go-ipfs')
       .path()
       .replace('app.asar', 'app.asar.unpacked')
 }
@@ -35,7 +35,7 @@ function writeIpfsBinaryPath (path) {
   )
 }
 
-async function spawn ({ flags, path, keysize }) {
+async function spawn ({ flags, path }) {
   const ipfsBin = getIpfsBinPath()
   writeIpfsBinaryPath(ipfsBin)
 
@@ -52,6 +52,7 @@ async function spawn ({ flags, path, keysize }) {
   })
 
   if (configExists(ipfsd)) {
+    migrateConfig(ipfsd)
     checkCorsConfig(ipfsd)
     return { ipfsd, isRemote: false }
   }
@@ -62,9 +63,7 @@ async function spawn ({ flags, path, keysize }) {
     return { ipfsd, isRemote: true }
   }
 
-  await ipfsd.init({
-    bits: keysize
-  })
+  await ipfsd.init()
 
   applyDefaults(ipfsd)
   return { ipfsd, isRemote: false }
