@@ -100,7 +100,7 @@
     "untildify": "^4.0.0",
     "v8-compile-cache": "^2.2.0",
     "which": "^2.0.2",
-    "winston": "^3.3.3",
+    "winston": "^3.7.2",
     "yargs": "^15.3.1"
   }
 }
