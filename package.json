@@ -88,7 +88,7 @@
     "intl-messageformat": "^9.6.8",
     "ipfs-http-client": "47.0.1",
     "ipfsd-ctl": "^7.2.0",
-    "is-ipfs": "^3.0.0",
+    "is-ipfs": "^6.0.2",
     "it-all": "^1.0.5",
     "it-concat": "^1.0.2",
     "multiaddr": "^8.1.2",
