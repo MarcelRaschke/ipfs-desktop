@@ -1,12 +1,20 @@
 const { app, shell } = require('electron')
+const path = require('path')
+const os = require('os')
 const i18n = require('i18next')
 const dialog = require('./dialog')
 
-const issueTemplate = (e) => `Please describe what you were doing when this error happened.
+const issueTitle = (e) => {
+  const es = e.stack ? e.stack.toString() : 'unknown error, no stacktrace'
+  const firstLine = es.substr(0, Math.min(es.indexOf('\n'), 72))
+  return `[gui error report] ${firstLine}`
+}
+
+const issueTemplate = (e) => `👉️ Please describe what you were doing when this error happened.
 
 **Specifications**
 
-- **OS**: ${process.platform}
+- **OS**: ${os.platform()} ${os.release()}
 - **IPFS Desktop Version**: ${app.getVersion()}
 - **Electron Version**: ${process.versions.electron}
 - **Chrome Version**: ${process.versions.chrome}
@@ -19,6 +27,8 @@ ${e.stack}
 `
 
 let hasErrored = false
+
+const generateErrorIssueUrl = (e) => `https://github.com/ipfs-shipyard/ipfs-desktop/issues/new?labels=kind%2Fbug%2C+need%2Ftriage&template=bug_report.md&title=${encodeURI(issueTitle(e))}&body=${encodeURI(issueTemplate(e))}`.substring(0, 1999)
 
 function criticalErrorDialog (e) {
   if (hasErrored) return
@@ -38,7 +48,7 @@ function criticalErrorDialog (e) {
   if (option === 0) {
     app.relaunch()
   } else if (option === 2) {
-    shell.openExternal(`https://github.com/ipfs-shipyard/ipfs-desktop/issues/new?body=${encodeURI(issueTemplate(e))}`)
+    shell.openExternal(generateErrorIssueUrl(e))
   }
 
   app.exit(1)
@@ -72,13 +82,14 @@ function recoverableErrorDialog (e, options) {
   const option = dialog(cfg)
 
   if (option === 1) {
-    shell.openExternal(`https://github.com/ipfs-shipyard/ipfs-desktop/issues/new?body=${encodeURI(issueTemplate(e))}`)
+    shell.openExternal(generateErrorIssueUrl(e))
   } else if (option === 2) {
-    shell.openItem(app.getPath('userData'))
+    shell.openPath(path.join(app.getPath('userData'), 'combined.log'))
   }
 }
 
 module.exports = Object.freeze({
   criticalErrorDialog,
-  recoverableErrorDialog
+  recoverableErrorDialog,
+  generateErrorIssueUrl
 })

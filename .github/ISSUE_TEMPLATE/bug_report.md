@@ -2,12 +2,18 @@
 name: Bug report
 about: Create a bug report
 title: ''
-labels: need/triage
+labels: kind/bug, need/triage
 assignees: ''
 
 ---
- - OS: [e.g. macOS, Windows, Linux]
- - Version of IPFS Desktop [e.g. 0.11.1]
+
+<!--
+Please make sure this issue is not covered in our FAQ/Troubleshoot section:
+https://github.com/ipfs/ipfs-desktop#faq--troubleshooting
+-->
+
+- OS: [e.g. macOS, Windows, Linux]
+- Version of IPFS Desktop [e.g. 0.20.0]
 
 **Describe the bug**
 A clear and concise description of what the bug is.
@@ -32,7 +38,7 @@ Add any other context about the problem here.
 ATTACH LOGS
 
 If possible:
-1. Go to `Advanced` → `Open Logs Directory`
+1. From the "IPFS icon" menu in your menubar/system tray, go to `Advanced` → `Open Logs Directory` *(for Linux users who do not have this menu, logs can be found in `$HOME/.config/IPFS Desktop` )*
 2. Find `*.log` files
 3. Attach `error.log` and `combined.log` to this issue.
 -->

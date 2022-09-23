@@ -6,15 +6,17 @@ const store = require('../common/store')
 const logger = require('../common/logger')
 const { STATUS } = require('./consts')
 const createDaemon = require('./daemon')
+const ipcMainEvents = require('../common/ipc-main-events')
+const { analyticsKeys } = require('../analytics/keys')
 
-module.exports = async function (ctx) {
+async function setupDaemon (ctx) {
   let ipfsd = null
   let status = null
   let wasOnline = null
 
-  const updateStatus = (stat) => {
+  const updateStatus = (stat, id = null) => {
     status = stat
-    ipcMain.emit('ipfsd', status)
+    ipcMain.emit(ipcMainEvents.IPFSD, status, id)
   }
 
   const getIpfsd = async (optional = false) => {
@@ -39,35 +41,33 @@ module.exports = async function (ctx) {
       return
     }
 
-    const log = logger.start('[ipfsd] start daemon', { withAnalytics: 'DAEMON_START' })
+    const log = logger.start('[ipfsd] start daemon', { withAnalytics: analyticsKeys.DAEMON_START })
     const config = store.get('ipfsConfig')
     updateStatus(STATUS.STARTING_STARTED)
 
-    if (config.path) {
-      // Updates the IPFS_PATH file. We do this every time we start up
-      // to make sure we always have that file present, even though
-      // there are installations and updates that might remove the file.
-      writeIpfsPath(config.path)
-    }
+    const res = await createDaemon(config)
 
-    try {
-      ipfsd = await createDaemon(config)
-
-      // Update the path if it was blank previously.
-      // This way we use the default path when it is
-      // not set.
-      if (!config.path || typeof config.path !== 'string') {
-        config.path = ipfsd.path
-        store.set('ipfsConfig', config)
-        writeIpfsPath(config.path)
-      }
-
-      log.end()
-      updateStatus(STATUS.STARTING_FINISHED)
-    } catch (err) {
-      log.fail(err)
+    if (res.err) {
+      log.fail(res.err)
       updateStatus(STATUS.STARTING_FAILED)
+      return
     }
+
+    ipfsd = res.ipfsd
+
+    logger.info(`[daemon] IPFS_PATH: ${ipfsd.path}`)
+    logger.info(`[daemon] PeerID:    ${res.id}`)
+
+    // Update the path if it was blank previously.
+    // This way we use the default path when it is
+    // not set.
+    if (!config.path || typeof config.path !== 'string') {
+      config.path = ipfsd.path
+      store.set('ipfsConfig', config)
+    }
+
+    log.end()
+    updateStatus(STATUS.STARTING_FINISHED, res.id)
   }
 
   const stopIpfs = async () => {
@@ -75,7 +75,7 @@ module.exports = async function (ctx) {
       return
     }
 
-    const log = logger.start('[ipfsd] stop daemon', { withAnalytics: 'DAEMON_STOP' })
+    const log = logger.start('[ipfsd] stop daemon', { withAnalytics: analyticsKeys.DAEMON_STOP })
     updateStatus(STATUS.STOPPING_STARTED)
 
     if (!fs.pathExistsSync(join(ipfsd.path, 'config'))) {
@@ -109,12 +109,8 @@ module.exports = async function (ctx) {
 
   ipcMain.on('ipfsConfigChanged', restartIpfs)
 
-  app.on('before-quit', async e => {
-    if (ipfsd) {
-      e.preventDefault()
-      await stopIpfs()
-      app.quit()
-    }
+  app.on('before-quit', async () => {
+    if (ipfsd) await stopIpfs()
   })
 
   await startIpfs()
@@ -128,12 +124,5 @@ module.exports = async function (ctx) {
   })
 }
 
+module.exports = setupDaemon
 module.exports.STATUS = STATUS
-
-function writeIpfsPath (path) {
-  fs.outputFileSync(
-    join(app.getPath('home'), './.ipfs-desktop/IPFS_PATH')
-      .replace('app.asar', 'app.asar.unpacked'),
-    path
-  )
-}

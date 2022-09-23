@@ -1,32 +1,25 @@
-const { app, shell } = require('electron')
+const { shell, app, BrowserWindow, Notification } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const i18n = require('i18next')
+const { ipcMain } = require('electron')
 const logger = require('../common/logger')
-const { notify } = require('../common/notify')
 const { showDialog } = require('../dialogs')
-const quitAndInstall = require('./quit-and-install')
+const { IS_MAC, IS_WIN, IS_APPIMAGE } = require('../common/consts')
+const ipcMainEvents = require('../common/ipc-main-events')
 
+function isAutoUpdateSupported () {
+  // atm only macOS, windows and AppImage builds support autoupdate mechanism,
+  // everything else needs to be updated manually or via a third-party package manager
+  return IS_MAC || IS_WIN || IS_APPIMAGE
+}
+
+let updateNotification = null // must be a global to avoid gc
 let feedback = false
-let installOnQuit = false
 
 function setup (ctx) {
+  // we download manually in 'update-available'
   autoUpdater.autoDownload = false
-  autoUpdater.autoInstallOnAppQuit = false
-
-  /**
-   * this replaces the autoInstallOnAppQuit feature of autoUpdater, which causes the app
-   * to uninstall itself if it is installed for all users on a windows system.
-   *
-   * More info: https://github.com/ipfs-shipyard/ipfs-desktop/issues/1514
-   * Should be removed once https://github.com/electron-userland/electron-builder/issues/4815 is resolved.
-   */
-  app.once('before-quit', ev => {
-    if (installOnQuit) {
-      ev.preventDefault()
-      installOnQuit = false
-      autoUpdater.quitAndInstall(false, false)
-    }
-  })
+  autoUpdater.autoInstallOnAppQuit = true
 
   autoUpdater.on('error', err => {
     logger.error(`[updater] ${err.toString()}`)
@@ -47,7 +40,7 @@ function setup (ctx) {
   })
 
   autoUpdater.on('update-available', async ({ version, releaseNotes }) => {
-    logger.info('[updater] update available, download will start')
+    logger.info(`[updater] update to ${version} available, download will start`)
 
     try {
       await autoUpdater.downloadUpdate()
@@ -96,65 +89,93 @@ function setup (ctx) {
   })
 
   autoUpdater.on('update-downloaded', ({ version }) => {
-    logger.info('[updater] update downloaded')
+    logger.info(`[updater] update to ${version} downloaded`)
 
-    installOnQuit = true
-
-    const doIt = () => {
-      setImmediate(() => {
-        quitAndInstall(ctx)
+    const feedbackDialog = () => {
+      const opt = showDialog({
+        title: i18n.t('updateDownloadedDialog.title'),
+        message: i18n.t('updateDownloadedDialog.message', { version }),
+        type: 'info',
+        buttons: [
+          i18n.t('updateDownloadedDialog.later'),
+          i18n.t('updateDownloadedDialog.now')
+        ]
       })
+      if (opt === 1) { // now
+        setImmediate(async () => {
+          await beforeQuitCleanup() // just to be sure (we had regressions before)
+          autoUpdater.quitAndInstall()
+        })
+      }
     }
-
-    if (!feedback) {
-      notify({
+    if (feedback) {
+      feedback = false
+      // when in instant feedback mode, show dialog immediatelly
+      feedbackDialog()
+    } else {
+      // show unobtrusive notification + dialog on click
+      updateNotification = new Notification({
         title: i18n.t('updateDownloadedNotification.title'),
         body: i18n.t('updateDownloadedNotification.message', { version })
-      }, doIt)
+      })
+      updateNotification.on('click', feedbackDialog)
+      updateNotification.show()
     }
-
-    feedback = false
-
-    showDialog({
-      title: i18n.t('updateDownloadedDialog.title'),
-      message: i18n.t('updateDownloadedDialog.message', { version }),
-      type: 'info',
-      buttons: [
-        i18n.t('updateDownloadedDialog.action')
-      ]
-    })
-
-    doIt()
   })
+
+  // In some cases before-quit event is not emitted before all windows are closed,
+  // and we need to do cleanup here
+  const beforeQuitCleanup = async () => {
+    BrowserWindow.getAllWindows().forEach(w => w.removeAllListeners('close'))
+    app.removeAllListeners('window-all-closed')
+    try {
+      const s = await ctx.stopIpfs()
+      logger.info(`[beforeQuitCleanup] stopIpfs had finished with status: ${s}`)
+    } catch (err) {
+      logger.error('[beforeQuitCleanup] stopIpfs had an error', err)
+    }
+  }
+  // built-in updater != electron-updater
+  // Added in https://github.com/electron-userland/electron-builder/pull/6395
+  require('electron').autoUpdater.on('before-quit-for-update', beforeQuitCleanup)
 }
 
 async function checkForUpdates () {
+  ipcMain.emit(ipcMainEvents.UPDATING)
   try {
     await autoUpdater.checkForUpdates()
   } catch (_) {
     // Ignore. The errors are already handled on 'error' event.
   }
+  ipcMain.emit(ipcMainEvents.UPDATING_ENDED)
 }
 
 module.exports = async function (ctx) {
-  if (process.env.NODE_ENV === 'development') {
-    ctx.checkForUpdates = () => {
+  if (['test', 'development'].includes(process.env.NODE_ENV)) {
+    ctx.manualCheckForUpdates = () => {
       showDialog({
         title: 'Not available in development',
         message: 'Yes, you called this function successfully.',
         buttons: [i18n.t('close')]
       })
     }
-
+    return
+  }
+  if (!isAutoUpdateSupported()) {
+    ctx.manualCheckForUpdates = () => {
+      shell.openExternal('https://github.com/ipfs-shipyard/ipfs-desktop/releases/latest')
+    }
     return
   }
 
   setup(ctx)
 
-  await checkForUpdates()
+  checkForUpdates() // background check
+
   setInterval(checkForUpdates, 43200000) // every 12 hours
 
-  ctx.checkForUpdates = () => {
+  // enable on-demand check via About submenu
+  ctx.manualCheckForUpdates = () => {
     feedback = true
     checkForUpdates()
   }
