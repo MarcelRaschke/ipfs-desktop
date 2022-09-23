@@ -40,13 +40,13 @@
   "restartIpfsDesktop": "IPFS Masaüstünü Yeniden Başlatın",
   "openLogs": "Günlükleri aç",
   "takeScreenshot": "Ekran görüntüsü al",
-  "downloadCid": "İndir…",
   "moveRepositoryLocation": "Depo Konumunu Taşı",
   "runGarbageCollector": "Çöp Toplayıcıyı Çalıştır",
   "selectDirectory": "Dizin Seçin",
   "customIpfsBinary": "Özel IPFS İkilisi",
   "setCustomIpfsBinary": "Özel IPFS İkilisini Ayarla",
   "clearCustomIpfsBinary": "Özel IPFS İkilisini Temizle",
+  "openCliDocumentation": "Açık CLI Dokümantasyonu",
   "polkitDialog": {
     "title": "Polkit bulunamadı",
     "message": "IPFS, polkit aracısı olmadan /usr/local/bin/ dizinine eklenemez."
@@ -105,11 +105,11 @@
   },
   "itemsAddedNotification": {
     "title": "Eklenen öğeler",
-    "message": "Düğümünüze { count } öğe eklendi. Panonuza paylaşılabilir bir bağlantı kopyalandı. Dosyalarınızı görmek için burayı tıklayın."
+    "message": "{ count }öğe IPFS düğümünüze eklendi. Paylaşılabilir bağlantı panonuza kopyalandı."
   },
   "itemAddedNotification": {
     "title": "Öğe eklendi",
-    "message": "Düğümünüze öğe eklendi. Panonuza paylaşılabilir bir bağlantı kopyalandı. Dosyanızı görmek için burayı tıklayın."
+    "message": "Öğe IPFS düğümünüze eklendi. Paylaşılabilir bağlantı panonuza kopyalandı."
   },
   "itemsFailedNotification": {
     "title": "Öğeler eklenemedi",
@@ -128,13 +128,14 @@
     "message": "Güncellemeyi indirmek mümkün olmadı. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin."
   },
   "updateDownloadedDialog": {
-    "title": "Güncelleme indirildi",
-    "message": "{ version } sürümü için güncelleme indirildi. Güncellemeyi yüklemek için lütfen IPFS Masaüstü'nü yeniden başlatın.",
-    "action": "Tekrar başlat"
+    "title": "IPFS Masaüstü Güncellemesi",
+    "message": "IPFS Masaüstü { version } versiyonuna güncelleme mevcuttur. Şimdi yüklemek ister misiniz?",
+    "later": "Daha sonra",
+    "now": "Şimdi yükle"
   },
   "updateDownloadedNotification": {
-    "title": "Güncelleme indirildi",
-    "message": "IPFS Masaüstü'nün { version } sürümü için güncelleme indirildi. Yüklemek için bu bildirime tıklayın."
+    "title": "IPFS Masaüstü Güncellemesi",
+    "message": "IPFS Masaüstü { version } versiyonuna güncelleme mevcuttur."
   },
   "runGarbageCollectorWarning": {
     "title": "Çöp toplayıcı",
@@ -149,35 +150,9 @@
     "title": "Depoyu taşı",
     "message": "Kod deposu \"{ currDir }\" konumundan \"{ newDir }\" konumuna taşınamadı."
   },
-  "cantAddIpfsToPath": {
-    "title": "PATH üzerinde IPFS",
-    "message": "PATH'e IPFS eklenemedi."
-  },
   "runGarbageCollectorErrored": {
     "title": "Çöp toplayıcı",
     "message": "Çöp toplayıcı çalıştırması başarıyla tamamlanamadı."
-  },
-  "downloadCidContentDialog": {
-    "title": "Yerel bir dizine indirin",
-    "message": "Bir CID, IPFS yolu veya IPNS yolu girin:",
-    "action": "Sonraki"
-  },
-  "cantResolveCidDialog": {
-    "title": "Hata",
-    "message": "\"{ path }\" çözülemiyor."
-  },
-  "couldNotGetCidDialog": {
-    "title": "Hata",
-    "message": "\"{ path }\" getirilemiyor."
-  },
-  "contentsSavedDialog": {
-    "title": "Başarılı",
-    "message": "\"{ path }\" içeriği başarıyla indirildi.",
-    "action": "Dosyaları Gör"
-  },
-  "couldNotSaveDialog": {
-    "title": "Diske yazılamadı",
-    "message": "Diske yazılırken bir hata oluştu. Lütfen tekrar deneyin."
   },
   "launchAtLoginNotSupported": {
     "title": "Hata",
@@ -187,36 +162,9 @@
     "title": "Hata",
     "message": "Makinenizde oturum açma sırasında başlatma etkinleştirilemedi."
   },
-  "enableIpfsOnPath": {
-    "title": "PATH üzerinde IPFS'yi etkinleştir",
-    "message": "Bu seçeneği etkinleştirdiğinizde, IPFS komut satırınızda \"ipfs\" olarak kullanılabilir olacaktır. Bu eylem tersine çevrilebilir.",
-    "action": "Etkinleştir"
-  },
-  "disableIpfsOnPath": {
-    "title": "PATH üzerinde IPFS'yi devre dışı bırak",
-    "message": "Bu seçeneği devre dışı bıraktığınızda, IPFS artık komut satırınızda \"ipfs\" olarak kullanılamayacaktır.",
-    "action": "Devre dışı bırak"
-  },
   "enableGlobalTakeScreenshotShortcut": {
     "title": "Ekran görüntüsü kısayolunu etkinleştir",
     "message": "Bunu etkinleştirdiğinizde, \"{ accelerator }\" kısayolu, IPFS Masaüstü çalıştığı sürece ekran görüntüsü almak için kullanılabilir olacaktır."
-  },
-  "enableGlobalDownloadShortcut": {
-    "title": "İndirme kısayolunu etkinleştir",
-    "message": "Bunu etkinleştirdiğinizde, \"{ accelerator }\" kısayolu, IPFS Masaüstü çalıştığı sürece dosyaları indirmek için kullanılabilir olacaktır."
-  },
-  "installNpmOnIpfsWarning": {
-    "title": "IPFS'ye npm yükleyin",
-    "message": "Bu deneysel özellik, \"ipfs-npm\" paketini sisteminize yükler. Node.js'nin yüklenmesi gerekmektedir.",
-    "action": "Yükle"
-  },
-  "unableToInstallNpmOnIpfs": {
-    "title": "Hata",
-    "message": "Sisteminize \"ipfs-npm\" paketini kurmak mümkün olmadı. Lütfen daha fazla bilgi için günlükleri kontrol edin veya komut satırınızda \"npm install -g ipfs-npm\" komutunu çalıştırarak manuel olarak yüklemeyi deneyin."
-  },
-  "unableToUninstallNpmOnIpfs": {
-    "title": "Hata",
-    "message": "Sisteminizden \"ipfs-npm\" paketini kaldırmak mümkün olmadı. Lütfen daha fazla bilgi için günlükleri kontrol edin veya komut satırınızda \"npm uninstall -g ipfs-npm\" komutunu çalıştırarak manuel olarak kaldırmayı deneyin."
   },
   "settings": {
     "settings": "Ayarlar",
@@ -228,9 +176,7 @@
     "pubsub": "PubSub'ı etkinleştir",
     "namesysPubsub": "PubSub üzerinden IPNS'yi etkinleştirin",
     "automaticGC": "Otomatik Değersiz Veri Toplama",
-    "ipfsCommandLineTools": "Komut Satırı Araçları",
     "takeScreenshotShortcut": "Global Ekran Görüntüsü Kısayolu",
-    "downloadHashShortcut": "Global İndirme Kısayolu",
     "experiments": "Deneyler",
     "npmOnIpfs": "IPFS'de npm'yi etkinleştir"
   },
@@ -245,5 +191,24 @@
   "clearCustomIpfsBinarySuccess": {
     "title": "Özel IPFS ikilisini temizle",
     "message": "Özel IPFS ikili dosyası temizlendi. Birlikte verilen IPFS sürümünü kullanmaya başlamak için önce IPFS'nin yeniden başlatılması gerekir."
+  },
+  "unresponsiveWindowDialog": {
+    "title": "IPFS Masaüstü yanıt vermiyor",
+    "message": "Devam eden operasyon beklenenden daha fazla kaynak tüketmekte. İptal etmek ve arayüzü yeniden yüklemeye zorlamak ister misiniz?",
+    "forceReload": "Evet, yeniden yükle",
+    "doNothing": "Hiçbir şey yapma"
+  },
+  "migrationDialog": {
+    "title": "IPFS Masaüstü Geçişi",
+    "message": "Bir dakika! IPFS Masaüstü'nün en yeni veri deposu geçişlerini çalıştırması gerekmektedir:",
+    "closeAndContinue": "Arka planda devam et"
+  },
+  "startupFailedDialog": {
+    "title": "IPFS Masaüstü Başlatması Başarısız Oldu",
+    "message": "IPFS düğümü bir hatayla karşılaştı ve başlatma tamamlanamadı:"
+  },
+  "invalidRepositoryDialog": {
+    "title": "Geçersiz IPFS Deposu veya Yapılandırma Dosyası",
+    "message": "The repository at “{ path }” yolundaki depo geçersizdir. “config” dosyası geçerli bir JSON formatında olmalıdır.\n\nBefore starting IPFS Masaüstü'nü tekrar başlatmadan önce, lütfen yapılandırma dosyasını düzeltin veya eski depoyu \".ipfs.backup\" olarak yeniden adlandırın."
   }
 }

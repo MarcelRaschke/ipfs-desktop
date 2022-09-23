@@ -1,4 +1,5 @@
-const { ipcRenderer } = require('electron')
+// @ts-check
+const { ipcRenderer, contextBridge } = require('electron')
 const screenshotHook = require('./screenshot')
 const connectionHook = require('./connection-status')
 const { COUNTLY_KEY, VERSION } = require('../common/consts')
@@ -8,30 +9,18 @@ connectionHook()
 
 const urlParams = new URLSearchParams(window.location.search)
 
+let previousHash = null
+
 function checkIfVisible () {
   if (document.hidden) {
+    if (window.location.hash === '#/blank') return // skip, already blank
     previousHash = window.location.hash
     window.location.hash = '/blank'
   } else {
+    if (previousHash === '#/blank') return // skip
     window.location.hash = previousHash
   }
 }
-
-var originalSetItem = window.localStorage.setItem
-window.localStorage.setItem = function () {
-  if (arguments[0] === 'i18nextLng') {
-    ipcRenderer.send('updateLanguage', arguments[1])
-  }
-
-  originalSetItem.apply(this, arguments)
-}
-
-let previousHash = null
-
-ipcRenderer.on('updatedPage', (_, url) => {
-  previousHash = url
-  window.location.hash = url
-})
 
 document.addEventListener('visibilitychange', () => {
   checkIfVisible()
@@ -41,7 +30,13 @@ document.addEventListener('DOMContentReady', () => {
   checkIfVisible()
 })
 
-window.ipfsDesktop = {
+// track hash changes, so checkIfVisible always has the right previousHash
+document.addEventListener('hashchange', () => {
+  if (window.location.hash === '#/blank') return // skip
+  previousHash = window.location.hash
+})
+
+contextBridge.exposeInMainWorld('ipfsDesktop', {
   countlyAppKey: COUNTLY_KEY,
 
   countlyDeviceId: urlParams.get('deviceId'),
@@ -57,14 +52,26 @@ window.ipfsDesktop = {
 
   version: VERSION,
 
+  /**
+   *
+   * @param {import('countly-sdk-nodejs').ConsentFeatures} consent
+   */
   removeConsent: (consent) => {
     ipcRenderer.send('countly.removeConsent', consent)
   },
 
+  /**
+   *
+   * @param {import('countly-sdk-nodejs').ConsentFeatures} consent
+   */
   addConsent: (consent) => {
     ipcRenderer.send('countly.addConsent', consent)
+  },
+
+  updateLanguage: (language) => {
+    ipcRenderer.send('updateLanguage', language)
   }
-}
+})
 
 // Inject api address
 window.localStorage.setItem('ipfsApi', urlParams.get('api'))

@@ -3,6 +3,266 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.23.0] - 2022-08-30
+
+## What's Changed
+* chore: i18n, CI, and dep updates by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2214
+* fix: quit if repository is part of private network by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2223
+* chore(maintenance): remove addedApiPort after go-ipfs 0.13 by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2226
+* fix: log correct error on spawn by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2225
+* fix: use constants for withAnalytics keys by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2224
+* Change 'Go-ipfs' to 'Kubo' in tray menu by @bertrandfalguiere in https://github.com/ipfs/ipfs-desktop/pull/2246
+* feat: jsdoc and improvements to daemon logic by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2227
+* feat: Kubo 0.15.0 by @ajnavarro in https://github.com/ipfs/ipfs-desktop/pull/2240
+
+## New Contributors
+* @bertrandfalguiere made their first contribution in https://github.com/ipfs/ipfs-desktop/pull/2246
+* @ajnavarro made their first contribution in https://github.com/ipfs/ipfs-desktop/pull/2240
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.22.0...v0.23.0
+
+## [v0.22.0] - 2022-07-21
+
+- IPFS: [`kubo v0.14.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.14.0) :sparkles:
+- UI: [`v2.15.1`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.1) :sparkles:
+
+* feat: ipfs-webui v2.15.1 by @SgtPooki in https://github.com/ipfs/ipfs-desktop/pull/2190
+* feat: kubo 0.14 by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2210
+* docs: update manual QA script by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2176
+* docs: add network error troubleshoot by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2178
+* chore: remove unused auto-project triggers by @galargh in https://github.com/ipfs/ipfs-desktop/pull/2207
+* chore: use official github action in auto-project by @galargh in https://github.com/ipfs/ipfs-desktop/pull/2208
+* chore: create enum for ipcMain eventNames by @noliveira95 in https://github.com/ipfs/ipfs-desktop/pull/2189
+
+## [v0.21.0] - 2022-06-13
+
+- IPFS: [`go-ipfs v0.13.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.13.0) :sparkles:
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+
+* docs: v0.20.6 by @SgtPooki in https://github.com/ipfs/ipfs-desktop/pull/2137
+* Remove hardcoded DHT client routing by @2color in https://github.com/ipfs/ipfs-desktop/pull/2152
+* chore: remove deprecated ipfs-on-path, npm-on-ipfs by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2140
+* chore(maintenance): move config keys to separate file by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2143
+* go-ipfs v0.13.0 by @guseggert in https://github.com/ipfs/ipfs-desktop/pull/2166
+* chore: electron build updates by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2172
+
+## [v0.20.6] - 2021-05-12
+
+* fix: return error instead of throw by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2074
+* README: Update link that points to ipfs-shipyard repository by @schuelermine in https://github.com/ipfs/ipfs-desktop/pull/2119
+* docs: Add repo.lock troubleshooting steps to readme by @SgtPooki in https://github.com/ipfs/ipfs-desktop/pull/2111
+* feat: Add app&webui ready/load metrics by @SgtPooki in https://github.com/ipfs/ipfs-desktop/pull/2126
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.20.5...v0.20.6
+
+## [v0.20.5] - 2021-04-09
+
+- IPFS: [`go-ipfs v0.12.2`](https://github.com/ipfs/go-ipfs/releases/tag/v0.12.2)
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+
+* chore: electron 18  and go-ipfs 0.12.2 by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2098
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.20.4...v0.20.5
+
+## [v0.20.4] - 2021-03-28
+
+- IPFS: [`go-ipfs v0.12.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.12.0)
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+
+* fix: migrating to less expensive config in `Swarm.ConnMgr` by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2055
+* fix: detect invalid or corrupted repository by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2067
+* fix: static message when ipfs daemon dies on start by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2078
+* refactor: remove 'download' functionality by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2061
+* chore: remove unused and update dependencies by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/2047
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.20.3...v0.20.4
+
+## [v0.20.3] - 2021-03-21
+
+- IPFS: [`go-ipfs v0.12.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.12.0)
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+
+* fix: ipfs-companion rpc api in go-ipfs <0.13 by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2054
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.20.2...v0.20.3
+
+## [v0.20.2] - 2021-03-15
+
+- IPFS: [`go-ipfs v0.12.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.12.0)
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+
+* docs: 0.20.x by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2012
+* fix: ux of notification after file import by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2013
+* refactor: remove checkCorsConfig  by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/1955
+* docs: debian 11 by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2033
+* feat: add known webui addresses to CORS conf by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/1956
+* fix: pass ipfs config show error by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2032
+* fix: proper catch-all daemon startup errors by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2030
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.20.1...v0.20.2
+
+## [v0.20.1] - 2021-03-07
+
+- IPFS: [`go-ipfs v0.12.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.12.0)
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+
+* fix: migration fallback to ipfs by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2008
+* refactor: remove mocha/chai, fix e2e on windows by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2007
+* fix: increase free port lookup range by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2010
+* fix: gui error report title by @lidel in https://github.com/ipfs/ipfs-desktop/pull/2011
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.20.0...v0.20.1
+
+## [v0.20.0] - 2021-03-01
+
+- IPFS: [`go-ipfs v0.12.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.12.0) ✨
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+
+This release includes UI that will inform user when time-consuming migration needs to be run as part of IPFS node update:
+
+![Screenshot 2022-02-25 at 17 51 21](https://user-images.githubusercontent.com/5447088/155754805-79c89a8d-87a9-456e-b43c-1fa3deb7fedd.png)
+
+* feat: show repo migration (go-ipfs 0.12.0) by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/1982
+* fix: remove default lower bound from gateway and api port lookup by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/1991
+* chore: electron 17.1 and related deps by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1998
+* chore(i18n): locale sync bf2bfe54f48ccb0d5ec896a364b5d6eabe9b4155
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.19.3...v0.20.0
+
+## [v0.19.2] - 2021-02-14
+
+* fix: macos autoupdate flow by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1979
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.19.1...v0.19.2
+
+## [v0.19.1] - 2021-02-14
+
+- IPFS: [`go-ipfs v0.11.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.11.0)
+- UI: [`v2.15.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)  ✨
+
+Electron 17 and a bunch of bugfixes.
+WebUI users may notice that it is now possible to set up [permanent peering with other nodes](https://github.com/ipfs/ipfs-webui/releases/v2.14.0):
+> [![](https://user-images.githubusercontent.com/157609/152223529-ff7a2c47-3650-4a12-946f-9e4f44bb911c.png)](https://github.com/ipfs/ipfs-webui/releases/v2.14.0)
+
+* feat: ipfs-webui v2.13 → v2.15.0
+  - mostly bugfixes, but includes permanent peering support
+  - see release notes for: [v2.14](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.14.0)+[v2.15](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.15.0)
+* feat: electron 17 and playwright e2e tests by @hacdias and @lidel #1937
+* feat: better handling of 'unresponsive' event by @hacdias in #1952
+* fix: os-native add-to-ipfs on Windows and macOS  by @hacdias in https://github.com/ipfs/ipfs-desktop/pull/1976
+* fix: dialog when IPFS_PATH/api port is offline by @lidel in 13de17403fcd1892a0830b3da0199d116a14d899
+* fix: electron version  by @hacdias in #1965
+* fix: add .manualCheckForUpdates before tray startup by @hacdias in #1950
+* refactor: remove deprecated "ipfs on PATH" feature by @hacdias in  #1948
+* chore: uninstall npm on ipfs  by @hacdias in #1947
+* chore(i18n): locale sync by @lidel in 50c31bb8f09ea91b268b0a1c3189af105764025c
+* chore: update dependencies by @lidel in  #1959, fa17bdd06ffaea0c0411d8f8a60d6d61e1afc5f7 and @hacdias  in #1899, #1960
+
+
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.19.0...v0.19.1
+
+## [v0.18.0] - 2021-12-13
+
+This is the same as [0.18.0](https://github.com/ipfs/ipfs-desktop/releases/tag/v0.18.0), but with auto update fix for macOS.
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.18.0...v0.18.1
+
+## [v0.18.0] - 2021-12-13
+
+- IPFS: [`go-ipfs v0.11.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.11.0) ✨
+- UI: [`v2.13.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.13.0)
+
+* <del>fix: remove zip for Squirrel.Mac by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1932</del> (reverted in 0.18.1)
+* feat: go-ipfs 0.11.0 by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1936
+* chore: release prep by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1938
+
+**Full Changelog**: https://github.com/ipfs/ipfs-desktop/compare/v0.17.0...v0.18.0
+
+## [v0.17.0] - 2021-10-05
+
+- IPFS: [`go-ipfs v0.10.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.10.0)
+- UI: [`v2.13.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.13.0)
+
+* feat: go-ipfs 0.10.0 by @guseggert in https://github.com/ipfs/ipfs-desktop/pull/1896
+* fix(ci): cache ipfs-webui by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1913
+* fix: analytics storage_path by @milahu in https://github.com/ipfs/ipfs-desktop/pull/1900
+* chore: default `--agent-version-suffix` and `--routing` by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1914
+* chore: electron v13.5.1 and other deps by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1915
+* chore: switch to i18next-fs-backend by @lidel in https://github.com/ipfs/ipfs-desktop/pull/1916
+
+## [v0.16.3] - 2021-09-08
+
+- IPFS: [`go-ipfs v0.9.1`](https://github.com/ipfs/go-ipfs/releases/tag/v0.9.1)
+- UI: [`v2.13.0`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.13.0)
+
+### 🛠 Fixes and Maintenance
+
+- feat: ipfs-webui v2.13.0 (#1903)
+- feat: allow to show devtools (#1901)
+- chore: update non-major dependencies (#1895)
+- fix: use context bridge (#1894)
+- docs: FreeBSD Linux Binary Compatibility (#1878)
+- docs: debian 11 troubleshooting (b8044741aeb365f773f9c6f78dadbd26e1083963)
+- chore: update maintainer AUR (#1880)
+- chore(i18n):  locale sync
+
+## [v0.16.2] - 2021-07-23
+
+- IPFS: [`go-ipfs v0.9.1`](https://github.com/ipfs/go-ipfs/releases/tag/v0.9.1)
+- UI: [`v2.12.4`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.12.4)
+
+### 🛠 Fixes and Maintenance
+
+- fix: go-ipfs 0.9.1 (#1876)
+- chore: electron v13.1.7 (43da717df49812cbddd067e8521da42d849b8f6c)
+- chore(i18n):  locale sync
+
+## [v0.16.1] - 2021-07-06
+
+- IPFS: [`go-ipfs v0.9.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.9.0)
+- UI: [`v2.12.4`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.12.4)
+
+### 🛠 Fixes and Maintenance
+
+- fix: ipfs-webui v2.12.4 (#1868)
+- fix: dont pin when adding to mfs (#1860)
+- fix: show Files after import on windows (#1853)
+- fix: choco publishing
+- chore(i18n):  locale sync
+
+## [v0.16.0] - 2021-06-23
+
+- IPFS: [`go-ipfs v0.9.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.9.0)
+- UI: [`v2.12.3`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.12.3)
+
+### ✨ Features
+
+- go-ipfs 0.9.0 ([RELEASE NOTES](https://github.com/ipfs/go-ipfs/releases/tag/v0.9.0))
+
+### 🛠 Fixes and Maintenance
+
+- electron 13.x (+ new electron-builder/updater)
+- chore(i18n):  locale sync
+
+## [v0.15.1] - 2021-06-17
+
+- IPFS: [`go-ipfs v0.8.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.8.0)
+- UI: [`v2.12.3`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.12.3)
+
+### 🛠 Fixes and Maintenance
+
+- fix: ipfs-webui  [`v2.12.3`](https://github.com/ipfs-shipyard/ipfs-webui/releases/v2.12.3)
+- fix: useful errors on download fail (#1843)
+- chore(i18n): locale sync
+
 ## [v0.15.0] - 2021-05-04
 
 - IPFS: [`go-ipfs v0.8.0`](https://github.com/ipfs/go-ipfs/releases/tag/v0.8.0)

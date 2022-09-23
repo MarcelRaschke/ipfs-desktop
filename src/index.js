@@ -1,26 +1,36 @@
+// @ts-check
+const { registerAppStartTime, getSecondsSinceAppStart } = require('./metrics/appStart')
+registerAppStartTime()
 require('v8-compile-cache')
+
 const { app, dialog } = require('electron')
+
+if (process.env.NODE_ENV === 'test') {
+  const path = require('path')
+
+  app.setPath('home', process.env.HOME)
+  app.setPath('userData', path.join(process.env.HOME, 'data'))
+}
+
 const fixPath = require('fix-path')
 const { criticalErrorDialog } = require('./dialogs')
 const logger = require('./common/logger')
 const setupProtocolHandlers = require('./protocol-handlers')
 const setupI18n = require('./i18n')
-const setupNpmOnIpfs = require('./npm-on-ipfs')
 const setupDaemon = require('./daemon')
 const setupWebUI = require('./webui')
 const setupAutoLaunch = require('./auto-launch')
 const setupAutoGc = require('./automatic-gc')
 const setupPubsub = require('./enable-pubsub')
 const setupNamesysPubsub = require('./enable-namesys-pubsub')
-const setupDownloadCid = require('./download-cid')
 const setupTakeScreenshot = require('./take-screenshot')
 const setupAppMenu = require('./app-menu')
 const setupArgvFilesHandler = require('./argv-files-handler')
 const setupAutoUpdater = require('./auto-updater')
 const setupTray = require('./tray')
-const setupIpfsOnPath = require('./ipfs-on-path')
 const setupAnalytics = require('./analytics')
 const setupSecondInstance = require('./second-instance')
+const { analyticsKeys } = require('./analytics/keys')
 
 // Hide Dock
 if (app.dock) app.dock.hide()
@@ -70,9 +80,9 @@ async function run () {
     await setupAppMenu(ctx)
 
     await setupWebUI(ctx) // ctx.webui, launchWebUI
+    await setupAutoUpdater(ctx) // ctx.manualCheckForUpdates
     await setupTray(ctx) // ctx.tray
     await setupDaemon(ctx) // ctx.getIpfsd, startIpfs, stopIpfs, restartIpfs
-    await setupAutoUpdater(ctx) // ctx.manualCheckForUpdates
 
     await Promise.all([
       setupArgvFilesHandler(ctx),
@@ -82,12 +92,16 @@ async function run () {
       setupNamesysPubsub(ctx),
       setupSecondInstance(ctx),
       // Setup global shortcuts
-      setupDownloadCid(ctx),
-      setupTakeScreenshot(ctx),
-      // Setup PATH-related features
-      setupNpmOnIpfs(ctx),
-      setupIpfsOnPath(ctx)
+      setupTakeScreenshot(ctx)
     ])
+    const submitAppReady = () => {
+      logger.addAnalyticsEvent({ withAnalytics: analyticsKeys.APP_READY, dur: getSecondsSinceAppStart() })
+    }
+    if (ctx.webui.webContents.isLoading()) {
+      ctx.webui.webContents.once('dom-ready', submitAppReady)
+    } else {
+      submitAppReady()
+    }
   } catch (e) {
     handleError(e)
   }

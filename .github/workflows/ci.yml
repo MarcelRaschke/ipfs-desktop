@@ -1,5 +1,14 @@
 name: ci
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
 
 env:
   XDG_CACHE_HOME: ${{ github.workspace }}/.cache
@@ -8,8 +17,66 @@ env:
 
 jobs:
 
+  webui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+
+      - name: Read ipfs-webui CID from package.json
+        id: read-webui-version
+        run: |
+          echo '::echo::on'
+          echo "::set-output name=cid::$(grep "build:webui:download" package.json | grep -Eio "bafy[a-z0-9]+")"
+          echo '::echo::off'
+        shell: bash
+      - name: Cache webui
+        uses: actions/cache@v3
+        id: webui-cache
+        with:
+          path: assets/webui
+          key: ${{ steps.read-webui-version.outputs.cid }}
+
+      - name: Cache bigger downloads
+        uses: actions/cache@v3
+        id: cache
+        if: steps.webui-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ github.workspace }}/.cache
+          key: ${{ runner.os }}-${{ hashFiles('package.json', 'package-lock.json', 'electron-builder.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ hashFiles('package.json', 'package-lock.json', 'electron-builder.yml') }}
+            ${{ runner.os }}-
+
+      - uses: ipfs/download-ipfs-distribution-action@v1
+        if: steps.webui-cache.outputs.cache-hit != 'true'
+        with:
+          name: kubo
+      - uses: ipfs/start-ipfs-daemon-action@v1
+        if: steps.webui-cache.outputs.cache-hit != 'true'
+
+      - name: Install dependencies and fetch ipfs-webui
+        if: steps.webui-cache.outputs.cache-hit != 'true'
+        run: |
+          npm ci --prefer-offline --no-audit --progress=false --cache ${{ github.workspace }}/.cache/npm
+          npm run clean
+          npm run force-webui-download
+
+      - name: Attach cached ipfs-webui to Github Action
+        uses: actions/upload-artifact@v2
+        with:
+          name: ipfs-webui
+          path: assets/webui
+          if-no-files-found: error
+
   test:
     runs-on: ${{ matrix.os }}
+    needs: webui
     strategy:
       fail-fast: false
       matrix:
@@ -22,10 +89,21 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: 'lts/*'
+
+      - name: Read ipfs-webui CID from package.json
+        id: read-webui-version
+        run: echo "::set-output name=cid::$(grep "build:webui:download" package.json | grep -Eio "bafy[a-z0-9]+")"
+        shell: bash
+      - name: Cache webui
+        uses: actions/cache@v3
+        id: webui-cache
+        with:
+          path: assets/webui
+          key: ${{ steps.read-webui-version.outputs.cid }}
 
       - name: Cache bigger downloads
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache
         with:
           path: ${{ github.workspace }}/.cache
@@ -34,17 +112,28 @@ jobs:
             ${{ runner.os }}-${{ hashFiles('package.json', 'package-lock.json', 'electron-builder.yml') }}
             ${{ runner.os }}-
 
+      - uses: ipfs/download-ipfs-distribution-action@v1
+        if: steps.webui-cache.outputs.cache-hit != 'true'
+        with:
+          name: kubo
+      - uses: ipfs/start-ipfs-daemon-action@v1
+        if: steps.webui-cache.outputs.cache-hit != 'true'
+
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit --progress=false --cache ${{ github.workspace }}/.cache/npm
 
       - name: Build
         run: npm run build
 
+      - name: Stop any ipfs daemon before tests
+        run: ipfs shutdown || true
+        shell: bash
+
       - name: Test
         run: npm run test
 
       - name: Test end-to-end
-        uses: GabrielBB/xvfb-action@f040be23a619e5ec34116f24098ad3626ceab681 # v1.4
+        uses: GabrielBB/xvfb-action@86d97bde4a65fe9b290c0b3fb92c2c4ed0e5302d # v1.6
         with:
           working-directory: ${{ github.workspace }}
           run: npm run test:e2e
@@ -67,10 +156,21 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: 'lts/*'
+
+      - name: Read ipfs-webui CID from package.json
+        id: read-webui-version
+        run: echo "::set-output name=cid::$(grep "build:webui:download" package.json | grep -Eio "bafy[a-z0-9]+")"
+        shell: bash
+      - name: Cache webui
+        uses: actions/cache@v3
+        id: webui-cache
+        with:
+          path: assets/webui
+          key: ${{ steps.read-webui-version.outputs.cid }}
 
       - name: Cache bigger downloads
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache
         with:
           path: ${{ github.workspace }}/.cache
@@ -78,6 +178,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ hashFiles('package.json', 'package-lock.json', 'electron-builder.yml') }}
             ${{ runner.os }}-
+
+      - uses: ipfs/download-ipfs-distribution-action@v1
+        if: steps.webui-cache.outputs.cache-hit != 'true'
+        with:
+          name: kubo
+      - uses: ipfs/start-ipfs-daemon-action@v1
+        if: steps.webui-cache.outputs.cache-hit != 'true'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit --progress=false --cache ${{ github.workspace }}/.cache/npm
