@@ -67,39 +67,3 @@
     "xvfb-maybe": "^0.2.1"
   },
   "dependencies": {
-    "countly-sdk-nodejs": "^20.11.0",
-    "electron-serve": "^1.1.0",
-    "electron-store": "^8.0.2",
-    "electron-updater": "^5.0.5",
-    "fix-path": "3.0.0",
-    "fs-extra": "^10.0.1",
-    "go-ipfs": "0.15.0",
-    "i18next": "^21.8.14",
-    "i18next-fs-backend": "1.1.4",
-    "i18next-icu": "^2.0.3",
-    "intl-messageformat": "^9.13.0",
-    "ipfs-http-client": "56.0.2",
-    "ipfsd-ctl": "10.0.6",
-    "it-last": "^1.0.6",
-    "multiaddr": "10.0.1",
-    "multiaddr-to-uri": "8.0.0",
-    "portfinder": "^1.0.28",
-    "untildify": "^4.0.0",
-    "v8-compile-cache": "^2.3.0",
-    "winston": "^3.7.2"
-  },
-  "standard": {
-    "ignore": [
-      "**/*.ts"
-    ]
-  },
-  "ts-standard": {
-    "project": "tsconfig.json",
-    "files": [
-      "types/*.ts"
-    ],
-    "ignore": [
-      "**/*.js"
-    ]
-  }
-}
